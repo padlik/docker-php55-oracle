@@ -48,8 +48,8 @@ ORCL =
 
 ### Elasticsearch related parameters
 Sugar requires [Elasticsearch][2] to be available. 
-`ELASTIC_HOST` default: **elastic**
-`ELASTIC_PORT` default: **9200**
+- `ELASTIC_HOST` default: **elastic**
+- `ELASTIC_PORT` default: **9200**
 
 [2]:https://hub.docker.com/_/elasticsearch/
 
