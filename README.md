@@ -20,7 +20,7 @@ Each sugar ZIP bundle under `/sugar.d` folder will be unzipped and silently inst
 ## Possible options
 
 ### Licensing
-SUGAR_LICENSE - String. Valid license key for appropriate SugarCRM version 
+`SUGAR_LICENSE` - String. Valid license key for appropriate SugarCRM version 
 
 ### Database options
 - `SUGAR_DB_TYPE` - [ **mysql** | oic8 ]
