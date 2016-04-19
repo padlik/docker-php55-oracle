@@ -9,7 +9,7 @@ Image provides Apache, PHP 5.5 with Oracle client libraries and `SQLPLUS` utilit
 ```sh
 $ docker run -d --name sugar -e SUGAR_DB_TYPE=oci8 \ 
     -e DB_USER=sugar -e DB_PASS=sugar \
-    -p 80:80 \ 
+    -p 80:80 --link oracle:oracle --link elastic:elastic \ 
     -v $(pwd)/sugar.d:/sugar.d absolutapps/stack-php55-oracle
 ```
 
