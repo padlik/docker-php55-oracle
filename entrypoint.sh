@@ -114,19 +114,27 @@ wait_for_oracle(){
  echo -n "Checking for Oracle server: $ORACLE_HOST"
  connection="$DB_USER/$DB_PASS@//$ORACLE_HOST:$ORACLE_PORT/$ORACLE_SERVICE"
  db_ok=1
+ n_att=1
  while [ $db_ok = 1 ]; 
- do
- echo -n "."
+  do
+   echo -n "."
+   n_att=$((n_att+1))
  retval=`sqlplus -silent $connection <<EOF
 SET PAGESIZE 0 FEEDBACK OFF VERIFY OFF HEADING OFF ECHO OFF
 SELECT 'Alive' FROM dual;
 EXIT;
-EOF`
-  if [ "$retval" = "Alive" ]; then
-    db_ok=0
-  fi
- sleep 5
- done
+EOF` || true
+   if [ "$retval" = "Alive" ]; then
+     db_ok=0
+   fi
+   sleep 5
+   if [ $n_att -gt 10 ]; then 
+     echo "FAIL"
+     echo "WARNING: Cannot connect to Oracle after 10 attempts"
+     echo "Raw sqlplus output is: $retval"
+     break
+   fi
+  done
  echo
  echo "Oracle server is ready:  $ORACLE_HOST"
 }
@@ -138,7 +146,7 @@ sugar_install(){
  #root folder name inside a zip archive without trailing slashes
  sugar_root=`unzip -qql $sugar_zip | head -n1 | tr -s ' '| cut -d' ' -f5- | sed 's/\/$//' `
  echo -n "About to unzip installation files... "
- unzip -qq $sugar_zip -d $SUGAR_HOME
+ unzip -qq -o $sugar_zip -d $SUGAR_HOME
  echo "done"
  echo "Making silent installl configuration for: $SUGAR_DB_TYPE"
  make_install_configs $sugar_root
