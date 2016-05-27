@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ubuntu:15.10
 ENV DEBIAN_FRONTEND noninteractive
 
 ENV LD_LIBRARY_PATH=/usr/local/lib/instantclient
@@ -14,7 +14,7 @@ RUN apt-get update && \
    ln -s instantclient_12_1 instantclient && \
    cd /usr/local/lib/instantclient && \
    ln -s libclntsh.so.12.1 libclntsh.so && \
-   echo "instantclient,/usr/local/lib/instantclient" | pecl install oci8-1.4.10 && \
+   echo "instantclient,/usr/local/lib/instantclient" | pecl install oci8-2.0.11 && \
    touch /etc/php5/cli/conf.d/oci8.ini && \
    echo "extension=oci8.so" > /etc/php5/cli/conf.d/oci8.ini && \
    ln -s /etc/php5/cli/conf.d/oci8.ini /etc/php5/apache2/conf.d/oci8.ini && \
