@@ -14,10 +14,6 @@ make_tns(){
     )" > ${TNS_ADMIN}/tnsnames.ora 
 }
 
-shutdown_http(){
- service apache2 stop || true
- exit 0
-}
 
 make_override(){
  mkdir -p $SUGAR_HOME
@@ -34,7 +30,6 @@ patch_phpini(){
   sed -i 's/memory_limit = .*/memory_limit = '${PHP_MEM_LIMIT}'/' /etc/php5/apache2/php.ini
   sed -i 's/upload_max_filesize = .*/upload_max_filesize = '${PHP_UPLOAD_LIMIT}'/' /etc/php5/apache2/php.ini
 }
-
 
 
 make_install_configs(){
@@ -185,23 +180,54 @@ run_init_scripts(){
  done
 }
 
+setup_vhost(){
+ vh=${SUGAR_HOST:-${VIRTUAL_HOST:-localhost}}
+ if [ $vh == "localhost" ]; then
+   echo "No virtual hosts are defined with SUGAR_HOST or VIRTUAL_HOST"
+ else
+   echo "About to set virtual host to $vh"
+   for d in $(ls -d $SUGAR_HOME/*/); do
+     conf=${d}/config.php
+     if [[ -r $conf && -w $conf ]]; then
+       cp $conf ${conf}.vh
+       sed -i s@http://localhost@http://$vh@g $conf
+     fi
+   done 
+ fi
+}
 
+startup_http(){
+  service apache2 start
+}
+
+
+shutdown_http(){
+  restore_vhost || true	
+  service apache2 stop || true
+  exit 0
+}
+
+restore_vhost(){
+  for d in $(ls -d $SUGAR_HOME/*/); do
+   conf=${d}/config.php.vh
+   if [[ -r $conf && -w $conf ]]; then
+     cp $conf ${d}/config.php
+     rm -f $conf
+   fi
+  done
+}
 
 case "$1" in
     '')
        make_tns && echo "tnsnames.ora has been created"
        patch_phpini && echo "PHP settings applied sucessfully"
-       echo "Checking if OCI extension has been enabled"
-       check=`echo "<?php echo phpinfo() ?>" | php | grep oci8`
-       if [ -z "$check" ]; then
-         echo "ERROR: PHP OCI8 extension  cannot be found in PHP"
-       fi 
        make_override && echo "Configuring apache permissions"
        echo "<?php echo phpinfo() ?>" > $SUGAR_HOME/info.php
        chown -R $APACHE_USER:$APACHE_GROUP /var/www
-       service apache2 start
+       startup_http
        echo "HTTP server is ready"
        run_init_scripts
+       setup_vhost
        echo "All done, image is ready to use"
        while [ "$END" == '' ]; do
          sleep 1
