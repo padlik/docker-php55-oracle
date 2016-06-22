@@ -8,7 +8,7 @@ ENV ORACLE_HOME=$ORACLE_BASE
 ENV PATH=$PATH:$ORACLE_HOME
 
 RUN apt-get update && \
-   apt-get install -y build-essential php5-dev php-pear libaio1 php5 php5-mysql libaio-dev php5-curl php5-gd unzip mysql-client  && \
+   apt-get install -y build-essential php5-dev php-pear libaio1 php5 php5-mysql libaio-dev php5-curl php5-gd unzip mysql-client php5-redis  && \
    cd /usr/local/lib && \
    curl https://dl.dropboxusercontent.com/s/2gimcl6tbs1wmz4/instantclient_12_1.tar.gz?dl=0 | tar -xzf - && \
    ln -s instantclient_12_1 instantclient && \
@@ -44,6 +44,8 @@ ENV DB_PASS=sugar
 ENV ELASTIC_HOST=elastic
 ENV ELASTIC_PORT=9200
 
+ENV REDIS_HOST=redis
+ENV REDIS_PORT=6379
 
 ENV ORACLE_SERVICE=orcl
 ENV ORACLE_HOST=oracle
