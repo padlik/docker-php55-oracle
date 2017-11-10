@@ -7,11 +7,12 @@ ENV ORACLE_BASE=/usr/local/lib/instantclient
 ENV ORACLE_HOME=$ORACLE_BASE
 ENV PATH=$PATH:$ORACLE_HOME
 
+
 RUN apt-get update && \
-   apt-get install -y build-essential php5-dev php-pear libaio1 php5 php5-mysql libaio-dev php5-curl php5-gd unzip mysql-client php5-redis  && \
+   apt-get install -y build-essential php5-dev php-pear libaio1 php5 php5-mysql libaio-dev php5-curl php5-gd unzip mysql-client php5-redis php5-mcrypt && \
    cd /usr/local/lib && \
-   curl https://dl.dropboxusercontent.com/s/2gimcl6tbs1wmz4/instantclient_12_1.tar.gz?dl=0 | tar -xzf - && \
-   ln -s instantclient_12_1 instantclient && \
+   curl https://dl.dropboxusercontent.com/s/7xu4qlaj9yezof1/instantclient_12_2.tar.gz?dl=0 | tar -xzf - && \
+   ln -s instantclient_12_2 instantclient && \
    cd /usr/local/lib/instantclient && \
    ln -s libclntsh.so.12.1 libclntsh.so && \
    echo "instantclient,/usr/local/lib/instantclient" | pecl install oci8-2.0.11 && \
@@ -32,6 +33,7 @@ ENV SUGAR_BASE=sugar
 ENV WEB_ROOT=/var/www/html
 ENV SUGAR_HOME=$WEB_ROOT/$SUGAR_BASE
 ENV SUGAR_LICENSE='<>'
+ENV DEMO_DATA=yes
 
 ENV SUGAR_DB_TYPE=mysql
 

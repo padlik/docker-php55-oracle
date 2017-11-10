@@ -81,7 +81,7 @@ make_install_configs(){
 	'setup_license_key' => '$SUGAR_LICENSE',
 	'setup_system_name' => 'SugarCRM',
 	'setup_site_url' => '$url',
-	'demoData' => 'no',
+	'demoData' => '$DEMO_DATA',
 	);
 	" > $sugar_si
 
